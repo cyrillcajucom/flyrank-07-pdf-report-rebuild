@@ -1,6 +1,12 @@
 import datetime
 import sqlite3
 import uuid
+import threading
+from pydantic import BaseModel
+
+report_lock = threading.Lock()
+class ReportRequest(BaseModel):
+    force: bool = False
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from data import DB, init_db
@@ -18,9 +24,13 @@ def health():
     return {'status': 'ok'}
 
 @app.post('/reports')
-def make_report():
+def make_report(body: ReportRequest | None = None):
     init_reports()
-    with sqlite3.connect(DB) as db:
+    with report_lock, sqlite3.connect(DB) as db:
+        today = datetime.date.today().isoformat()
+        existing = db.execute('SELECT id,path FROM reports WHERE substr(created_at,1,10)=? ORDER BY created_at DESC LIMIT 1', (today,)).fetchone()
+        if existing and not (body and body.force) and __import__('pathlib').Path(existing[1]).is_file():
+            return JSONResponse({'id':existing[0], 'file':f'/reports/{existing[0]}/file'}, status_code=200)
         if db.execute('SELECT COUNT(*) FROM orders').fetchone()[0] == 0:
             raise HTTPException(400, 'Run python data.py first')
         report_id = str(uuid.uuid4())

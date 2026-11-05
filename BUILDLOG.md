@@ -16,3 +16,6 @@
 
 ## Stage 4
 FastAPI TestClient POST /reports: 201 after 0.817 s, id 11817d4a-091e-4650-ab67-60cc4910cc2f, file link. GET record: 200; file: 200 application/pdf, 58,795 bytes starting %PDF-. Unknown record/file: both 404. Pipeline runs synchronously, stores only path/id/date in SQLite. Recorded actual local wait rather than claiming a multi-second pause.
+
+## Stage 5
+Two concurrent TestClient POSTs: [201,200], same id 7c516998-ce88-412b-8628-2c85be852b9a; directory difference exactly one new PDF. force:true: 201, distinct id 04262d08-92c2-4c1d-b426-64625342f274. Added daily lookup and an in-process lock, retained stored-file existence check. Documented single-worker boundary.

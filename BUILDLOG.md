@@ -19,3 +19,8 @@ FastAPI TestClient POST /reports: 201 after 0.817 s, id 11817d4a-091e-4650-ab67-
 
 ## Stage 5
 Two concurrent TestClient POSTs: [201,200], same id 7c516998-ce88-412b-8628-2c85be852b9a; directory difference exactly one new PDF. force:true: 201, distinct id 04262d08-92c2-4c1d-b426-64625342f274. Added daily lookup and an in-process lock, retained stored-file existence check. Documented single-worker boundary.
+
+## Stage 6
+`python -m pytest -q`: 1 passed in 2.76 s; real Chromium regression covers repeat seed, aggregation, concurrent idempotency, download, PDF pages/repeated headers, unknown ids and force. Cloned the committed Stage 5 into a fresh directory and ran README dependency install, Chromium install and seed successfully. Initial attempt to run the still-uncommitted Stage 6 test from that Stage 5 clone correctly found no tests; reran only the documented startup pipeline. Fresh-clone timings recorded below. Shared machine already had packages/browser cached, so the under-five-minute measurement does not include a first-ever large Chromium network download. README now includes required SQL, actual proofs, Stage 4/5 explanations, screenshot and checklist; generated files remain ignored.
+
+Clean-clone startup pipeline: 13.83 s, POST 201 id 2664ce4e-c68f-4182-8f57-8001ac766096; download 200, 58,795 real PDF bytes. No old generated database or report was copied.

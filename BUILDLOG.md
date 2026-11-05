@@ -13,3 +13,6 @@
 
 ## Stage 3
 `python render.py`: exit 0; reports/test.pdf is a real eight-page Chromium A4 PDF. PyMuPDF checked page count and detail column headers on all seven detail pages. Generated fresh report-page-1.png and all-pages-review.png; visually reviewed contact sheet: all 200 rows intact, headers repeat, no clipped text. Print CSS uses break-inside:avoid and thead. Title includes today's date, totals, top five, last-seven-day breakdown and full detail.
+
+## Stage 4
+FastAPI TestClient POST /reports: 201 after 0.817 s, id 11817d4a-091e-4650-ab67-60cc4910cc2f, file link. GET record: 200; file: 200 application/pdf, 58,795 bytes starting %PDF-. Unknown record/file: both 404. Pipeline runs synchronously, stores only path/id/date in SQLite. Recorded actual local wait rather than claiming a multi-second pause.
